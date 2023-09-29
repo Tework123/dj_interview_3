@@ -6,7 +6,10 @@ from users.serializers import UsersGetSerializer, UsersPostSerializer, UsersEdit
 
 
 class UsersView(generics.ListCreateAPIView):
-    """"""
+    """
+    GET Show all users
+    POST Create new user
+    """
 
     # permission_classes = None
 
@@ -28,7 +31,11 @@ class UsersView(generics.ListCreateAPIView):
 
 
 class UsersEditView(generics.RetrieveUpdateDestroyAPIView):
-    """"""
+    """
+    GET Show user
+    PATCH Update user fields
+    DELETE Delete user
+    """
     serializer_class = UsersEditGetSerializer
 
     # permission_classes = None
@@ -44,4 +51,6 @@ class UsersEditView(generics.RetrieveUpdateDestroyAPIView):
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK, data='Пользователь удален успешно')
 
-
+# сделать команду для заполнения бд
+# разобраться с djoser
+# переделать user на email с djoserom
