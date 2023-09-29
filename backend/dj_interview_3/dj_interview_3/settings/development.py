@@ -8,7 +8,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('ENGINE', default='django.db.backends.postgresql'),
-        'NAME': 'social_network',
+        'NAME': os.environ.get('NAME', default='dj_interview_3'),
         'USER': 'postgres',
         'PASSWORD': os.environ.get('PASSWORD', default='hard_password_github_actions'),
         'HOST': os.environ.get('HOST', default='localhost'),
