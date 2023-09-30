@@ -10,7 +10,6 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
     'rest_framework.renderers.JSONRenderer',
 )
 
-
 DATABASES = {
     'default': {
         "ENGINE": os.environ.get("ENGINE"),
