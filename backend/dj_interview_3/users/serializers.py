@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from users.models import CustomUser
+
 
 class UsersGetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email']
+        model = CustomUser
+        fields = ['email']
 
 
 class UsersPostSerializer(serializers.ModelSerializer):
@@ -19,17 +21,24 @@ class UsersPostSerializer(serializers.ModelSerializer):
         return instance
 
     class Meta:
-        model = User
-        fields = ['username', 'password']
+        model = CustomUser
+        fields = ['email', 'password']
 
 
 class UsersEditGetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'date_joined']
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name',
+                  'phone', 'city', 'about_me', 'date_of_birth', 'date_joined']
 
 
 class UsersEditPutSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name',
+                  'phone', 'city', 'about_me', 'date_of_birth']
+
+
+class UsersAuthSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()

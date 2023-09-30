@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig'
 
 ]
+# new user model
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,6 +86,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# debug-panel
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.environ.get("MAIL_SERVER")
 EMAIL_HOST_USER = os.environ.get("MAIL_USERNAME")
@@ -96,7 +105,6 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
 
