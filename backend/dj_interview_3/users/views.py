@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 
 from users.serializers import UsersGetSerializer, UsersPostSerializer, UsersEditGetSerializer
@@ -10,8 +10,6 @@ class UsersView(generics.ListCreateAPIView):
     GET Show all users
     POST Create new user
     """
-
-    # permission_classes = None
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -30,6 +28,14 @@ class UsersView(generics.ListCreateAPIView):
         return Response(status=status.HTTP_201_CREATED, data='Пользователь успешно создан')
 
 
+# короче так, завтра быстро переписываем модель юзера как в социальной сети по емайлу
+# пишем тесты и отправляем это задание.
+
+# это в ветке main
+
+# jwt я так понял должен запросы на обновление отправлять с фронтенда
+# попробуем с обычным токеном поиграться и djoser (в отдельной ветке)
+
 class UsersEditView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET Show user
@@ -37,8 +43,7 @@ class UsersEditView(generics.RetrieveUpdateDestroyAPIView):
     DELETE Delete user
     """
     serializer_class = UsersEditGetSerializer
-
-    # permission_classes = None
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return User.objects.filter(pk=self.kwargs['pk'])

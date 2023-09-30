@@ -5,12 +5,15 @@ from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("__debug__/", include("debug_toolbar.urls")),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('users/', include('users.urls')),
 
-    path("__debug__/", include("debug_toolbar.urls")),
 
     # встроенная авторизация
     # path('api/v1/auth/', include('rest_framework.urls')),
