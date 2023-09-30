@@ -48,7 +48,3 @@ class UsersEditView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK, data='Пользователь удален успешно')
-
-# сделать команду для заполнения бд
-# разобраться с djoser
-# переделать user на email с djoserom
