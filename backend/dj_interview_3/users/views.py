@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, exceptions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from users.models import CustomUser
-from users.serializers import UsersGetSerializer, UsersPostSerializer, UsersEditGetSerializer, UsersAuthSerializer
+from users.serializers import (UsersGetSerializer, UsersPostSerializer,
+                               UsersEditGetSerializer, UsersAuthSerializer)
 
 
 class UsersView(generics.ListCreateAPIView):
@@ -29,6 +30,34 @@ class UsersView(generics.ListCreateAPIView):
         serializer.save()
 
         return Response(status=status.HTTP_201_CREATED, data='Пользователь успешно создан')
+
+
+class UsersFilterView(generics.ListAPIView):
+    """
+    GET show user with filter
+    """
+    serializer_class = UsersGetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        email = self.kwargs['email']
+        return CustomUser.objects.filter(email=email)
+
+
+class UsersOrderView(generics.ListAPIView):
+    """
+    GET show all users with order_by
+    """
+    serializer_class = UsersGetSerializer
+
+    def get_queryset(self):
+        order_by = self.kwargs['order_by']
+        try:
+            response = CustomUser.objects.order_by(order_by)
+        except Exception as e:
+            raise exceptions.NotFound(detail=e)
+
+        return response
 
 
 class UsersEditView(generics.RetrieveUpdateDestroyAPIView):

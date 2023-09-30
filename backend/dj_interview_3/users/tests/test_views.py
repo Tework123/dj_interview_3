@@ -1,6 +1,4 @@
 import datetime
-
-from django.core import mail
 from django.test import TestCase
 from faker import Faker
 from rest_framework import status
@@ -30,6 +28,11 @@ class LoginViewTest(TestCase):
         user = CustomUser.objects.get(email='user1@mail.ru')
         return user
 
+    def auth_user(self) -> None:
+        """Авторизуем пользователя"""
+        self.client.login(email='user@mail.ru',
+                          password='user@mail.ru')
+
     def test_user_create_already_exist(self):
         response = self.client.post('/users/',
                                     data={'email': 'user1@mail.ru',
@@ -58,14 +61,30 @@ class LoginViewTest(TestCase):
 
     def test_users_list(self):
         response = self.client.get('/users/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
 
+    def test_users_list_filter(self):
+        self.auth_user()
+
+        response = self.client.get('/users/filter/user@mail.ru/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['email'], 'user@mail.ru')
+
+    def test_users_list_order_by(self):
+        self.auth_user()
+
+        response = self.client.get('/users/order_by/date_joined/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        order_data = CustomUser.objects.order_by('date_joined')
+        self.assertEqual(len(response.data), len(order_data))
+        self.assertEqual(response.data[0]['email'], order_data[0].email)
+
     def test_user_edit(self):
-        self.client.login(email='user@mail.ru',
-                          password='user@mail.ru')
+        self.auth_user()
+
         user = self.get_user()
         response = self.client.patch(f'/users/{user.pk}',
                                      data={
@@ -80,8 +99,8 @@ class LoginViewTest(TestCase):
         self.assertEqual(edit_user.last_name, 'new_name')
 
     def test_delete_account(self):
-        self.client.login(email='user@mail.ru',
-                          password='user@mail.ru')
+        self.auth_user()
+
         user = self.get_user()
         response = self.client.delete(f'/users/{user.pk}')
 
@@ -92,8 +111,7 @@ class LoginViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_logout(self):
-        self.client.login(email='user@mail.ru',
-                          password='user@mail.ru')
+        self.auth_user()
 
         response = self.client.post('/users/logout/')
 

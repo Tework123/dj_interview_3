@@ -11,9 +11,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
 
     path("__debug__/", include("debug_toolbar.urls")),
-
-    # встроенная авторизация
-    # path('api/v1/auth/', include('rest_framework.urls')),
 ]
 
 # swagger

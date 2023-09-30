@@ -29,8 +29,6 @@ class Command(BaseCommand):
                                            last_name=name.split(' ')[1],
                                            city=city,
                                            about_me=job,
-                                           date_of_birth=timezone.now()
-                                                         - relativedelta(years=35),
-                                           )
+                                           date_of_birth=timezone.now() - relativedelta(years=35))
 
         self.stdout.write(self.style.SUCCESS('Пользователи успешно созданы!'))
