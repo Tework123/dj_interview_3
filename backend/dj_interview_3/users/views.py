@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 
 from users.serializers import UsersGetSerializer, UsersPostSerializer, UsersEditGetSerializer
@@ -10,8 +10,6 @@ class UsersView(generics.ListCreateAPIView):
     GET Show all users
     POST Create new user
     """
-
-    # permission_classes = None
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -38,7 +36,7 @@ class UsersEditView(generics.RetrieveUpdateDestroyAPIView):
     """
     serializer_class = UsersEditGetSerializer
 
-    # permission_classes = None
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return User.objects.filter(pk=self.kwargs['pk'])
