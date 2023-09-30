@@ -1,0 +1,59 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+      
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11]
+
+    services:
+      db:
+        image: postgres:15.3
+        env:
+          POSTGRES_DB: dj_interview_3
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: hard_password_github_actions
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+          
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        cd backend/dj_interview_3/
+        pip install -r requirements.txt
+        pip install flake8
+        
+    - name: Check linters
+      run: |
+        cd backend/dj_interview_3/
+        python -m flake8
+        
+    - name: Run Tests
+      env:
+        DJANGO_SETTINGS_MODULE: dj_interview_3.settings.development
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      run: |
+        cd backend/dj_interview_3/
+        python manage.py test
+
+
+      
